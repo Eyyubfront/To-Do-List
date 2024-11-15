@@ -1,72 +1,70 @@
 const input = document.querySelector("input");
-const addBtn = document.querySelector("button");
-const inputContainer = document.querySelector(".input-container");
-const noteContainer = document.querySelector(".note-container");
-const resetBtn = document.getElementById("reset");
-const sort = document.querySelector("#sort");
-let notes = [];
-let isInputVisible = true;
+const addButton = document.querySelector("button");
+const inputArea = document.querySelector(".input-area");
+const taskDisplay = document.querySelector(".task-display");
+const clearButton = document.getElementById("clear-btn");
+const sortBtn = document.querySelector("#sort-btn");
+let tasks = [];
+let isInputActive = true;
 
-addBtn.addEventListener("click", () => {
-  if (isInputVisible) {
+addButton.addEventListener("click", () => {
+  if (isInputActive) {
     if (input.value !== "") {
-      notes.push(input.value);
-      addNote(notes);
+      tasks.push(input.value);
+      renderTasks(tasks);
       input.value = "";
-      isInputVisible = false;
-      inputContainer.style.display = "none";
+      isInputActive = false;
+      inputArea.style.display = "none";
     } else {
       alert("Please fill the input!");
     }
   } else {
-    inputContainer.style.display = "flex";
-    isInputVisible = true;
+    inputArea.style.display = "flex";
+    isInputActive = true;
   }
 });
 
-function addNote(arr) {
-  noteContainer.innerHTML = "";
+function renderTasks(arr) {
+  taskDisplay.innerHTML = "";
   let startIndex = 0;
-  arr.forEach((element, index) => {
+  arr.forEach((item, index) => {
     startIndex++;
-    let noteDiv = document.createElement("div");
-    noteDiv.classList.add("note");
-    let note = document.createElement("p");
-    note.textContent = `${startIndex}) ${element}`;
-    let removeBtn = document.createElement("i");
-    removeBtn.classList.add("ri-close-line");
-    noteDiv.append(note, removeBtn);
-    noteContainer.append(noteDiv);
-    removeBtn.addEventListener("click", () => {
-      notes = notes.filter((value, elementIndex) => elementIndex !== index);
-      addNote(notes);
-      if (notes.length === 0) {
-        noteContainer.style.borderColor = "transparent";
-        inputContainer.style.display = "flex";
+    let taskDiv = document.createElement("div");
+    taskDiv.classList.add("task-item");
+    let task = document.createElement("p");
+    task.textContent = `${startIndex}) ${item}`;
+    let deleteBtn = document.createElement("i");
+    deleteBtn.classList.add("ri-close-line");
+    taskDiv.append(task, deleteBtn);
+    taskDisplay.append(taskDiv);
+    deleteBtn.addEventListener("click", () => {
+      tasks = tasks.filter((_, itemIndex) => itemIndex !== index);
+      renderTasks(tasks);
+      if (tasks.length === 0) {
+        taskDisplay.style.borderColor = "transparent";
+        inputArea.style.display = "flex";
       }
     });
   });
-  noteContainer.style.borderColor = "#c4c4c4";
+  taskDisplay.style.borderColor = "#c4c4c4";
 }
 
-resetBtn.addEventListener("click", () => {
+clearButton.addEventListener("click", () => {
   input.value = "";
 });
 
-let isSorted = false;
-sort.addEventListener("click", () => {
-  if (notes.length) {
-    if (!isSorted) {
-      notes.sort((a, b) => (a > b ? -1 : 1));
-      isSorted = true;
-      sort.style.transform = "rotate(180deg)";
+let isOrdered = false;
+sortBtn.addEventListener("click", () => {
+  if (tasks.length) {
+    if (!isOrdered) {
+      tasks.sort((a, b) => (a > b ? -1 : 1));
+      isOrdered = true;
+      sortBtn.style.transform = "rotate(180deg)";
     } else {
-      notes.sort((a, b) => (a > b ? 1 : -1));
-      sort.style.transform = "rotate(0deg)";
-      isSorted = false;
+      tasks.sort((a, b) => (a > b ? 1 : -1));
+      sortBtn.style.transform = "rotate(0deg)";
+      isOrdered = false;
     }
-    addNote(notes);
-  } else {
-    alert("There is no any note!");
+    renderTasks(tasks);
   }
 });
